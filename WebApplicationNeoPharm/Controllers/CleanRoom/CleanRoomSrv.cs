@@ -11,34 +11,24 @@ namespace WebApplicationNeoPharm.Controllers
     public class CleanRoomSrv
     {
         protected readonly ILogger<CleanRoomSrv> _logger;
+        private readonly IHttpClientFactory _httpClientFactory;       
 
-
-
-        private readonly IHttpClientFactory _httpClientFactory;
-        private ILogger<CleanRoomController> logger;
-        private IHttpClientFactory httpClientFactory;
-
-        public CleanRoomSrv(ILogger<CleanRoomSrv> logger, IHttpClientFactory httpClientFactory)
+        public CleanRoomSrv( IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-            _logger = logger;
+           
         }
 
-        public CleanRoomSrv(ILogger<CleanRoomController> logger, IHttpClientFactory httpClientFactory)
-        {
-            this.logger = logger;
-            this.httpClientFactory = httpClientFactory;
-        }
+       
 
         public PrepDto PrepDto { get; private set; }
 
         public async Task<RootobjectReactFormRes> GetPrep()
         {
             RootobjectReactFormRes rootobjectReactFormRes = new RootobjectReactFormRes();
-            try
-            {
+            
 
-                _logger.LogInformation("Run endpoint {endpoint} {verb}", "/api/ValuesController", "GET");
+                //_logger.LogInformation("Run endpoint {endpoint} {verb}", "/api/ValuesController", "GET");
                 NamedClientModel namedClientModel = new NamedClientModel(_httpClientFactory);
 
                 ClsPrepUsers clsPrepUser = await namedClientModel.GetUsers();
@@ -58,18 +48,8 @@ namespace WebApplicationNeoPharm.Controllers
 
                
                 rootobjectReactFormRes = prepDto.BuildForm(prep, clsPrepStation, ePrepEqpmnt, clsPrepUser);
-                
-            }
-            catch (Exception exp)
-            {
-
-                _logger.LogError(exp.Message);
-                rootobjectReactFormRes.ErrorCode = 100;
-                rootobjectReactFormRes.ErrorMessage = exp.Message;
-                rootobjectReactFormRes.ErrorInnerException = exp.InnerException?.ToString();
-
-            }
             return rootobjectReactFormRes;
+            
 
 
         }
